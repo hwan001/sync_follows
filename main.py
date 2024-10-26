@@ -1,7 +1,13 @@
 from flask import Flask, request, jsonify
 import requests
+import logging
+import json
 
 app = Flask(__name__)
+
+# 로깅 설정
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 def fetch_paginated_data(url, headers):
     result = []
@@ -46,6 +52,13 @@ def balance_following(username, token, exceptions):
 
 @app.route('/align', methods=['POST'])
 def api_balance_following():
+    client_ip = request.remote_addr
+    user_agent = request.headers.get('User-Agent')
+    request_data = request.json
+
+    log_data = json.dumps({k: v for k, v in request_data.items() if k != "token"}, ensure_ascii=False)
+    logger.info(f"Request from IP: {client_ip}, User-Agent: {user_agent}, Data: {log_data}")
+    
     data = request.json
     username = data.get("username")
     token = data.get("token")
@@ -56,6 +69,7 @@ def api_balance_following():
 
     result = balance_following(username, token, exceptions)
     return jsonify(result)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
