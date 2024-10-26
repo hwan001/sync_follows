@@ -6,7 +6,7 @@ import json
 app = Flask(__name__)
 
 # 로깅 설정
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format='[%(asctime)s][%(levelname)s] %(message)s')
 logger = logging.getLogger(__name__)
 
 def fetch_paginated_data(url, headers):
